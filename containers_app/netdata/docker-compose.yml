@@ -1,0 +1,55 @@
+# Netdata em Docker (imagem oficial).
+# Baseado no exemplo oficial: https://learn.netdata.cloud/docs/netdata-agent/installation/docker
+# Subir/atualizar: docker compose pull && docker compose up -d   (rodar nesta pasta)
+
+services:
+  netdata:
+    image: netdata/netdata:stable
+    container_name: netdata
+    restart: unless-stopped
+
+    # Usa a rede e os processos do próprio servidor, para enxergar tudo como
+    # se estivesse instalado direto (e escutar no IP do Tailscale).
+    network_mode: host
+    pid: host
+
+    # Permissões extras que o Netdata precisa para coletar métricas do sistema.
+    cap_add:
+      - SYS_PTRACE
+      - SYS_ADMIN
+    security_opt:
+      - apparmor:unconfined
+
+    environment:
+      - DO_NOT_TRACK=1          # desliga a telemetria anônima
+
+    # Token e chat ID do Telegram (arquivo fora do git, na raiz do repo).
+    env_file:
+      - ../../envs/telegram.env
+
+    volumes:
+      # Configurações versionadas neste repositório (somente leitura).
+      - ./config/netdata.conf:/etc/netdata/netdata.conf:ro
+      - ./config/health_alarm_notify.conf:/etc/netdata/health_alarm_notify.conf:ro
+
+      # Dados internos do Netdata (histórico de métricas, cache).
+      - netdataconfig:/etc/netdata
+      - netdatalib:/var/lib/netdata
+      - netdatacache:/var/cache/netdata
+
+      # Acesso somente leitura ao sistema do servidor.
+      - /:/host/root:ro,rslave
+      - /etc/passwd:/host/etc/passwd:ro
+      - /etc/group:/host/etc/group:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /etc/os-release:/host/etc/os-release:ro
+      - /var/log:/host/var/log:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /run/dbus:/run/dbus:ro
+
+volumes:
+  netdataconfig:
+  netdatalib:
+  netdatacache:

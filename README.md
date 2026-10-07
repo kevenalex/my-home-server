@@ -23,8 +23,5 @@ Cada serviço fica documentado em [`services/`](services/), em uma pasta própri
 | Serviço       | O que faz                                    | Status                                                          | Docs                                                       | Porta |
 | ------------- | -------------------------------------------- | --------------------------------------------------------------- | ---------------------------------------------------------- | ----- |
 | smartmontools | Monitora a saúde do SSD e alerta no Telegram | Instalado e testado (alerta no Telegram)                        | [services/smartmontools](services/smartmontools/README.md) | -     |
-| Netdata       | Painel de CPU, RAM, disco e temperatura      | Instalado (painel via Tailscale); alertas no Telegram pendentes | [services/netdata](services/netdata/README.md)             | 1025  |
+| Netdata       | Painel de CPU, RAM, disco e temperatura (Docker) | Migrando de nativo para Docker (guia pronto, não testado) | [services/netdata](services/netdata/README.md)             | 1025  |
 
-## Anotações
-
-Contexto e decisões ficam em [`anotacoes/`](anotacoes/): [instalação](anotacoes/instalacao.md), [backup](anotacoes/backup.md).
