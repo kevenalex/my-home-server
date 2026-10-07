@@ -1,0 +1,4 @@
+# Configurações para envs/
+# Lógica: Ignorar tudo menos o README.md desta pasta. Este README.md traz explicações sobre os .envs esperados neste diretório
+envs/*
+!envs/README.md
