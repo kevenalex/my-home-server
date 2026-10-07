@@ -55,13 +55,21 @@ sudo systemctl status smartmontools
 
 ## Testando
 
-Mande um alerta de teste (o `smartd` envia uma mensagem de teste ao iniciar por causa do `-M test` no `smartd.conf`; depois remova esse `-M test`, veja abaixo):
+O `smartd` manda uma mensagem de teste **sempre que o serviço inicia ou reinicia**, por causa do `-M test` no `smartd.conf`. Para disparar o teste:
 
 ```bash
-sudo journalctl -u smartmontools -n 30
+sudo systemctl restart smartmontools
 ```
 
-Você deve receber no Telegram: "Teste de aviso do smartd". Depois que chegar, edite `/etc/smartd.conf`, apague o ` -M test` da linha e rode `sudo systemctl restart smartmontools`.
+Você deve receber no Telegram a mensagem de teste. O `journalctl` **só mostra o log** (ele não envia nada pro Telegram); use-o apenas se algo der errado:
+
+```bash
+sudo journalctl -u smartmontools -n 30 --no-pager
+```
+
+O `--no-pager` imprime direto no terminal. Sem ele, o log abre no `less`: use as setas pra navegar e `q` pra sair.
+
+Depois que a mensagem chegar, edite `/etc/smartd.conf`, apague o ` -M test` do fim da linha e rode `sudo systemctl restart smartmontools` (agora sem mensagem de teste).
 
 Para ver a saúde quando quiser:
 
@@ -81,3 +89,4 @@ sudo smartctl -a /dev/nvme0      # tudo: desgaste (Percentage Used), temperatura
 
 - Avisa que o disco está dando sinais de problema, mas **não evita a perda de dados**. Quem protege os arquivos é o backup (ver [`anotacoes/backup.md`](../../anotacoes/backup.md)).
 - Alguns SSDs falham sem aviso prévio.
+
